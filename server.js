@@ -9,19 +9,23 @@ app.use(bodyParser.json());
 
 // Configuración de CORS
 app.use(cors({
-  origin: ['http://localhost:8100', 'https://server-lectorium-p6vosw6mq-hectors-projects-1bba0c96.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-})); 
+  origin: ['http://localhost:8100', 'https://server-lectorium-al56kiz2p-hectors-projects-1bba0c96.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
-const sequelize = new Sequelize('bsbjtagtdfmhpwwramwr', 'u1ike6kh4o91gog0', 'r0lVfgQJkzsT161Db2Z5', {
-  host: 'bsbjtagtdfmhpwwramwr-mysql.services.clever-cloud.com',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
+  host: process.env.DB_HOST,
   dialect: 'mysql'
 });
 
 sequelize.authenticate()
   .then(() => console.log('Database connected'))
-  .catch(err => console.log('Error: ' + err));
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+    process.exit(1); // Terminar el proceso si hay un error de conexión
+  });
 
 const User = sequelize.define('user', {
   email: { type: Sequelize.STRING, unique: true },
@@ -32,7 +36,11 @@ const User = sequelize.define('user', {
 });
 
 sequelize.sync()
-  .then(() => console.log('Users table created'));
+  .then(() => console.log('Users table created'))
+  .catch(err => {
+    console.error('Unable to create tables:', err);
+    process.exit(1); // Terminar el proceso si hay un error al crear las tablas
+  });
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -149,7 +157,11 @@ const UserBook = sequelize.define('user_book', {
 });
 
 sequelize.sync()
-  .then(() => console.log('Tables created'));
+  .then(() => console.log('Tables created'))
+  .catch(err => {
+    console.error('Unable to create tables:', err);
+    process.exit(1); // Terminar el proceso si hay un error al crear las tablas
+  });
 
 app.get('/user/:id', (req, res) => {
   const userId = req.params.id;
