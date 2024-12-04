@@ -4,14 +4,14 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const cors = require('cors'); 
 
-
-
-
 const app = express();
 app.use(bodyParser.json());
+
 // Configuración de CORS
 app.use(cors({
-  origin: ['http://localhost:8100', 'server-lectorium-p6vosw6mq-hectors-projects-1bba0c96.vercel.app']
+  origin: ['http://localhost:8100', 'https://server-lectorium-p6vosw6mq-hectors-projects-1bba0c96.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 })); 
 
 const sequelize = new Sequelize('bsbjtagtdfmhpwwramwr', 'u1ike6kh4o91gog0', 'r0lVfgQJkzsT161Db2Z5', {
@@ -45,9 +45,9 @@ const transporter = nodemailer.createTransport({
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
   User.findOne({ where: { email, password } })
-    .then(email => {
-      if (email) {
-        res.json(email);
+    .then(user => {
+      if (user) {
+        res.json(user);
       } else {
         res.status(400).json({ error: ' Credenciales incorrectas.' });
       }
@@ -125,8 +125,6 @@ app.post('/update-password', (req, res) => {
     });
 });
 
-
-
 const Author = sequelize.define('author', {
   name: { type: Sequelize.STRING },
   bio: { type: Sequelize.TEXT },
@@ -173,6 +171,5 @@ app.get('/user/:id/favorite-books', (req, res) => {
     });
 });
 
-app.listen(3001, () => console.log('Server running on port 3001'));
-
-
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
