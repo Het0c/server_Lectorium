@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 // Configuración de CORS
 app.use(cors({
-  origin: ['http://localhost:8100', 'https://your-vercel-project-url.vercel.app']
+  origin: ['http://localhost:8100', 'server-lectorium-p6vosw6mq-hectors-projects-1bba0c96.vercel.app']
 })); 
 
 const sequelize = new Sequelize('bsbjtagtdfmhpwwramwr', 'u1ike6kh4o91gog0', 'r0lVfgQJkzsT161Db2Z5', {
