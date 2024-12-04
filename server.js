@@ -4,9 +4,15 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const cors = require('cors'); 
 
+
+
+
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+// Configuración de CORS
+app.use(cors({
+  origin: ['http://localhost:8100', 'https://your-vercel-project-url.vercel.app']
+})); 
 
 const sequelize = new Sequelize('bsbjtagtdfmhpwwramwr', 'u1ike6kh4o91gog0', 'r0lVfgQJkzsT161Db2Z5', {
   host: 'bsbjtagtdfmhpwwramwr-mysql.services.clever-cloud.com',
@@ -168,3 +174,5 @@ app.get('/user/:id/favorite-books', (req, res) => {
 });
 
 app.listen(3001, () => console.log('Server running on port 3001'));
+
+
