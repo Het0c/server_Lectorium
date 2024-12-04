@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "server.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "server.js" }
+    ],
+    "env": {
+      "DB_HOST": "bsbjtagtdfmhpwwramwr-mysql.services.clever-cloud.com",
+      "DB_USER": "u1ike6kh4o91gog0",
+      "DB_PASS": "r0lVfgQJkzsT161Db2Z5",
+      "DB_NAME": "bsbjtagtdfmhpwwramwr",
+      "NODE_ENV": "production"
+    }
+  }
+  
