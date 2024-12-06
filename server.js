@@ -8,12 +8,16 @@ const app = express();
 app.use(bodyParser.json());
 
 // Configuración de CORS
-app.use(cors({
+const corsOptions = {
   origin: ['http://localhost:8100', 'https://server-lectorium-al56kiz2p-hectors-projects-1bba0c96.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+  credentials: true,
+  optionsSuccessStatus: 200 // Algunos navegadores (Chrome) devuelven 204 para opciones preflight, forzar 200
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Pre-flight options
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   host: process.env.DB_HOST,
