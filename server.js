@@ -16,7 +16,7 @@ const corsOptions = {
   optionsSuccessStatus: 200 // Para algunos navegadores (Chrome) que devuelven 204 para opciones preflight, forzar 200
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.options('*', cors(corsOptions)); // Manejar las solicitudes preflight
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
