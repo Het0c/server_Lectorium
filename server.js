@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 
 // Configuración de CORS
 const corsOptions = {
-  origin: ['http://localhost:8100', 'https://server-lectorium.onrender.com'],
+  origin: ['http://localhost:8100', 'https://server-lectorium.onrender.com', 'capacitor://localhost'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -49,8 +49,8 @@ sequelize.sync()
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'recuperacionLectorium@gmail.com',
-    pass: 'imxm mmng msdr qdxi'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -79,6 +79,7 @@ app.post('/register', (req, res) => {
       res.status(500).json({ error: 'Tiempo de espera agotado. Intente más tarde.' });
     });
 });
+
 
 app.post('/reset-password', (req, res) => {
   const { email } = req.body;
