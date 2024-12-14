@@ -24,7 +24,20 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+const authenticate = (req, res, next) => {
+  // Lógica para autenticar al usuario y añadir `req.user`
+  // Por ejemplo, usando un token JWT
+  const token = req.headers.authorization.split(' ')[1];
+  jwt.verify(token, 'tu_secreto', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'No autorizado' });
+    }
+    req.user = decoded; // Añade el usuario decodificado a la solicitud
+    next();
+  });
+};
 
+app.use(authenticate); // Usa el middleware de autenticación
 app.use(cors());
 app.options('*', cors(corsOptions)); // Manejar las solicitudes preflight
 
