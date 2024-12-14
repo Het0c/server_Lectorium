@@ -16,6 +16,15 @@ const corsOptions = {
   optionsSuccessStatus: 200 // Para algunos navegadores (Chrome) que devuelven 204 para opciones preflight, forzar 200
 };
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+
 app.use(cors());
 app.options('*', cors(corsOptions)); // Manejar las solicitudes preflight
 
@@ -46,13 +55,7 @@ sequelize.sync()
     process.exit(1); // Terminar el proceso si hay un error al crear las tablas
   });
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
@@ -137,6 +140,17 @@ app.post('/update-password', (req, res) => {
       res.status(500).json({ error: 'Tiempo de espera agotado. Intente más tarde.' });
     });
 });
+
+app.get('/profile', (req, res) => {
+  const userId = req.user.id; // Asumiendo que tienes middleware de autenticación que añade el usuario a la solicitud
+  User.findById(userId)
+    .then(user => res.json(user))
+    .catch(err => {
+      console.error('Error en /profile:', err);
+      res.status(500).json({ error: 'Error al obtener el perfil del usuario.' });
+    });
+});
+
 
 const Author = sequelize.define('author', {
   name: { type: Sequelize.STRING },
