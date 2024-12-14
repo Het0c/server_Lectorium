@@ -24,22 +24,9 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const authenticate = (req, res, next) => {
-  // Lógica para autenticar al usuario y añadir `req.user`
-  // Por ejemplo, usando un token JWT
-  const token = req.headers.authorization.split(' ')[1];
-  jwt.verify(token, 'tu_secreto', (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: 'No autorizado' });
-    }
-    req.user = decoded; // Añade el usuario decodificado a la solicitud
-    next();
-  });
-};
 
-app.use(authenticate); // Usa el middleware de autenticación
 app.use(cors());
-//app.options('*', cors(corsOptions)); // Manejar las solicitudes preflight
+app.options('*', cors(corsOptions)); 
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   host: process.env.DB_HOST,
@@ -67,6 +54,7 @@ sequelize.sync()
     console.error('Unable to create tables:', err);
     process.exit(1); // Terminar el proceso si hay un error al crear las tablas
   });
+
 
 
 app.post('/login', (req, res) => {
@@ -153,12 +141,12 @@ app.post('/update-password', (req, res) => {
     });
 });
 
-app.get('/profile', (req, res) => {
-  const userId = req.user.id; // Asegúrate de que `req.user` esté definido
-  User.findById(userId)
+app.get('/profile/:id', (req, res) => {
+  const userId = req.params.id;
+  User.findByPk(userId)
     .then(user => res.json(user))
     .catch(err => {
-      console.error('Error en /profile:', err);
+      console.error('Error en /profile/:id:', err);
       res.status(500).json({ error: 'Error al obtener el perfil del usuario.' });
     });
 });
@@ -216,3 +204,19 @@ app.get('/user/:id/favorite-books', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+// const authenticate = (req, res, next) => {
+//   // Lógica para autenticar al usuario y añadir `req.user`
+//   // Por ejemplo, usando un token JWT
+//   const token = req.headers.authorization.split(' ')[1];
+//   jwt.verify(token, 'tu_secreto', (err, decoded) => {
+//     if (err) {
+//       return res.status(401).json({ error: 'No autorizado' });
+//     }
+//     req.user = decoded; // Añade el usuario decodificado a la solicitud
+//     next();
+//   });
+// };
+
+// app.use(authenticate); // Usa el middleware de autenticación
