@@ -56,6 +56,8 @@ sequelize.sync()
     process.exit(1);
   });
 
+// Configuración para servir archivos estáticos desde el directorio uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Configuración de `multer` para almacenar archivos en el servidor
 const storage = multer.diskStorage({
@@ -71,7 +73,7 @@ const upload = multer({ storage: storage });
 
 app.post('/upload-profile-picture', upload.single('profilePicture'), (req, res) => {
   const userId = req.body.userId;
-  const profilePicture = req.file.path;
+  const profilePicture = `/uploads/${req.file.filename}`;
 
   User.update({ profilePicture }, { where: { id: userId } })
     .then(() => res.json({ message: 'Profile picture uploaded successfully', profilePicture }))
@@ -97,7 +99,6 @@ app.post('/login', (req, res) => {
     });
 });
 
-
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
   User.create({ email, password })
@@ -107,7 +108,6 @@ app.post('/register', (req, res) => {
       res.status(500).json({ error: 'Tiempo de espera agotado. Intente más tarde.' });
     });
 });
-
 
 app.post('/reset-password', (req, res) => {
   const { email } = req.body;
@@ -182,9 +182,6 @@ app.get('/profile/:id', (req, res) => {
     });
 });
 
-
-
-
 const Author = sequelize.define('author', {
   name: { type: Sequelize.STRING },
   bio: { type: Sequelize.TEXT },
@@ -199,7 +196,6 @@ const Book = sequelize.define('book', {
 }, {
   timestamps: false
 });
-
 
 const UserBook = sequelize.define('user_book', {
   user_id: { type: Sequelize.INTEGER },
@@ -236,6 +232,9 @@ app.get('/user/:id/favorite-books', (req, res) => {
     });
 });
 
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 // const authenticate = (req, res, next) => {
 //   // Lógica para autenticar al usuario y añadir `req.user`
 //   // Por ejemplo, usando un token JWT
@@ -251,6 +250,3 @@ app.get('/user/:id/favorite-books', (req, res) => {
 
 // app.use(authenticate); // Usa el middleware de autenticación
 
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
