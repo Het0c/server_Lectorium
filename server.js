@@ -97,10 +97,6 @@ app.post('/login', (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
   User.create({ email, password })
@@ -246,3 +242,6 @@ app.get('/user/:id/favorite-books', (req, res) => {
 
 // app.use(authenticate); // Usa el middleware de autenticación
 
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
