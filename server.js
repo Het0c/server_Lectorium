@@ -48,13 +48,14 @@ const User = sequelize.define('user', {
 }, {
   timestamps: false
 });
-
+// `id`, `email`, `password`, `resetCode`, `profilePicture` 
 sequelize.sync()
   .then(() => console.log('Users table created'))
   .catch(err => {
     console.error('Unable to create tables:', err);
     process.exit(1);
   });
+
 
 // Configuración de `multer` para almacenar archivos en el servidor
 const storage = multer.diskStorage({
@@ -168,12 +169,19 @@ app.post('/update-password', (req, res) => {
 app.get('/profile/:id', (req, res) => {
   const userId = req.params.id;
   User.findByPk(userId)
-    .then(user => res.json(user))
+    .then(user => {
+      if (user) {
+        res.json(user);
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    })
     .catch(err => {
       console.error('Error en /profile/:id:', err);
       res.status(500).json({ error: 'Error al obtener el perfil del usuario.' });
     });
 });
+
 
 
 
@@ -191,6 +199,7 @@ const Book = sequelize.define('book', {
 }, {
   timestamps: false
 });
+
 
 const UserBook = sequelize.define('user_book', {
   user_id: { type: Sequelize.INTEGER },
