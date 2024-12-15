@@ -10,7 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: ['http://localhost:8100', 'https://server-lectorium.onrender.com', 'capacitor://localhost'],
+  origin: ['https://server-lectorium.onrender.com','http://localhost:8100', 'capacitor://localhost'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
