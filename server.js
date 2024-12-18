@@ -10,23 +10,15 @@ const app = express();
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: ['https://server-lectorium.onrender.com','http://localhost:8100', 'capacitor://localhost'],
+  origin: ['https://server-lectorium.onrender.com', 'http://localhost:8100', 'capacitor://localhost'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
 };
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-app.use(cors());
-app.options('*', cors(corsOptions));
+app.use(cors(corsOptions)); // Asegúrate de usar las opciones CORS aquí
+app.options('*', cors(corsOptions)); // Opcional, pero puede ayudar
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   host: process.env.DB_HOST,
@@ -48,7 +40,7 @@ const User = sequelize.define('user', {
 }, {
   timestamps: false
 });
-// `id`, `email`, `password`, `resetCode`, `profilePicture` 
+
 sequelize.sync()
   .then(() => console.log('Users table created'))
   .catch(err => {
@@ -234,19 +226,3 @@ app.get('/user/:id/favorite-books', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// const authenticate = (req, res, next) => {
-//   // Lógica para autenticar al usuario y añadir `req.user`
-//   // Por ejemplo, usando un token JWT
-//   const token = req.headers.authorization.split(' ')[1];
-//   jwt.verify(token, 'tu_secreto', (err, decoded) => {
-//     if (err) {
-//       return res.status(401).json({ error: 'No autorizado' });
-//     }
-//     req.user = decoded; // Añade el usuario decodificado a la solicitud
-//     next();
-//   });
-// };
-
-// app.use(authenticate); // Usa el middleware de autenticación
-
