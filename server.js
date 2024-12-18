@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.options('*', cors(corsOptions));
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
